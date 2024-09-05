@@ -1,18 +1,18 @@
 package br.insper.aposta.aposta;
 
-import br.insper.aposta.partida.PartidaNaoEncontradaException;
-import br.insper.aposta.partida.PartidaNaoRealizadaException;
-import br.insper.aposta.partida.PartidaService;
-import br.insper.aposta.partida.RetornarPartidaDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import br.insper.aposta.partida.PartidaNaoEncontradaException;
+import br.insper.aposta.partida.PartidaNaoRealizadaException;
+import br.insper.aposta.partida.PartidaService;
+import br.insper.aposta.partida.RetornarPartidaDTO;
 
 @Service
 public class ApostaService {
@@ -82,7 +82,7 @@ public class ApostaService {
             } else {
                 throw new PartidaNaoRealizadaException("Partida não realizada");
             }
-            return apostaRepository.save(aposta);
+            return aposta;
 
         } else {
             throw new PartidaNaoEncontradaException("Partida não encontrada");
