@@ -1,8 +1,9 @@
 package br.insper.loja.time.service;
 
-import br.insper.loja.time.exception.TimeNaoEncontradoException;
-import br.insper.loja.time.model.Time;
-import br.insper.loja.time.repository.TimeRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,9 +12,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import br.insper.loja.time.exception.TimeNaoEncontradoException;
+import br.insper.loja.time.model.Time;
+import br.insper.loja.time.repository.TimeRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class TimeServiceTests {
@@ -85,6 +86,45 @@ public class TimeServiceTests {
         Assertions.assertThrows(TimeNaoEncontradoException.class,
                 () -> timeService.getTime(1));
 
+    }
+
+    @Test
+    public void testCadastrarTimeWhenNomeIsEmpty() {
+        Time time = new Time();
+        time.setNome("");
+        time.setIdentificador("123");
+
+        RuntimeException exception = Assertions.assertThrows(RuntimeException.class,
+                () -> timeService.cadastrarTime(time));
+
+        Assertions.assertEquals("Dados invalidos", exception.getMessage());
+    }
+
+    @Test
+    public void testCadastrarTimeWhenNomeAndIdentificadorIsNotEmpty() {
+        Time time = new Time();
+        time.setNome("teste");
+        time.setIdentificador("123");
+
+        Mockito.when(timeRepository.save(time)).thenReturn(time);
+
+        Time timeRetorno = timeService.cadastrarTime(time);
+
+        Assertions.assertNotNull(timeRetorno);
+        Assertions.assertEquals("teste", timeRetorno.getNome());
+        Assertions.assertEquals("123", timeRetorno.getIdentificador());
+    }
+
+    @Test
+    public void testCadastrarTimeWhenIdentificadorIsEmpty() {
+        Time time = new Time();
+        time.setNome("teste");
+        time.setIdentificador("");
+
+        RuntimeException exception = Assertions.assertThrows(RuntimeException.class,
+                () -> timeService.cadastrarTime(time));
+
+        Assertions.assertEquals("Dados invalidos", exception.getMessage());
     }
 
 
