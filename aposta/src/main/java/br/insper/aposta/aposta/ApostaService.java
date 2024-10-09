@@ -47,46 +47,48 @@ public class ApostaService {
 
         Optional<Aposta> op = apostaRepository.findById(idAposta);
 
-        if (!op.isPresent()) {
-            throw new ApostaNaoEncontradaException("Aposta não encontrada");
+        if (op.isPresent()) {
+            return op.get();
         }
 
-        Aposta aposta = op.get();
+        throw new ApostaNaoEncontradaException("Aposta não encontrada");
 
-        if (!aposta.getStatus().equals("REALIZADA")) {
-            return aposta;
-        }
+        // Aposta aposta = op.get();
 
-        ResponseEntity<RetornarPartidaDTO> partida = partidaService.getPartida(aposta.getIdPartida());
+        // if (!aposta.getStatus().equals("REALIZADA")) {
+        //     return aposta;
+        // }
 
-        if (partida.getStatusCode().is2xxSuccessful())  {
-            RetornarPartidaDTO partidaDTO = partida.getBody();
+        // ResponseEntity<RetornarPartidaDTO> partida = partidaService.getPartida(aposta.getIdPartida());
 
-            if (partidaDTO.getStatus().equals("REALIZADA")) {
+        // if (partida.getStatusCode().is2xxSuccessful())  {
+        //     RetornarPartidaDTO partidaDTO = partida.getBody();
 
-                if (aposta.getResultado().equals("EMPATE") && partidaDTO.isEmpate()) {
-                    aposta.setStatus("GANHOU");
-                }
+        //     if (partidaDTO.getStatus().equals("REALIZADA")) {
 
-                if (aposta.getResultado().equals("VITORIA_MANDANTE") && partidaDTO.isVitoriaMandante()) {
-                    aposta.setStatus("GANHOU");
-                }
+        //         if (aposta.getResultado().equals("EMPATE") && partidaDTO.isEmpate()) {
+        //             aposta.setStatus("GANHOU");
+        //         }
 
-                if (aposta.getResultado().equals("EMPATE") && partidaDTO.isVitoriaVisitante()) {
-                    aposta.setStatus("GANHOU");
-                }
+        //         if (aposta.getResultado().equals("VITORIA_MANDANTE") && partidaDTO.isVitoriaMandante()) {
+        //             aposta.setStatus("GANHOU");
+        //         }
 
-                if (aposta.getStatus().equals("REALIZADA")) {
-                    aposta.setStatus("PERDEU");
-                }
-            } else {
-                throw new PartidaNaoRealizadaException("Partida não realizada");
-            }
-            return aposta;
+        //         if (aposta.getResultado().equals("EMPATE") && partidaDTO.isVitoriaVisitante()) {
+        //             aposta.setStatus("GANHOU");
+        //         }
 
-        } else {
-            throw new PartidaNaoEncontradaException("Partida não encontrada");
-        }
+        //         if (aposta.getStatus().equals("REALIZADA")) {
+        //             aposta.setStatus("PERDEU");
+        //         }
+        //     } else {
+        //         throw new PartidaNaoRealizadaException("Partida não realizada");
+        //     }
+        //     return aposta;
+
+        // } else {
+        //     throw new PartidaNaoEncontradaException("Partida não encontrada");
+        // }
 
     }
 }
